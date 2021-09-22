@@ -1,11 +1,11 @@
-const fs = require('fs');
+const fs = require("fs");
 
-const configmap = JSON.parse(fs.readFileSync('configmap.json'));
+const configmap = JSON.parse(fs.readFileSync("configmap.json"));
 const data = {
   ...configmap.data,
 };
 
-let env = '';
+let env = "";
 
 for (let key in data) {
   if (data.hasOwnProperty(key)) {
@@ -13,4 +13,4 @@ for (let key in data) {
   }
 }
 
-fs.writeFileSync('.env.production', env);
+fs.writeFileSync(".env", env);

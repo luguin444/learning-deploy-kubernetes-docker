@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tutorial-deploy-production-us3-certmanager-certificate
+  namespace: default
+spec:
+  secretName: tutorial-deploy-production-us3-certmanager-certificate
+  issuerRef:
+    name: letsencrypt-prod3
+  commonName: aoo.respondeai.com.br
+  dnsNames:
+    - aoo.respondeai.com.br
