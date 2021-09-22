@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-tutorial-production-deployment
+  namespace: default
+  labels:
+    app: deploy-tutorial-production-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deploy-tutorial-production-deployment
+  template:
+    metadata:
+      labels:
+        app: deploy-tutorial-production-deployment
+    spec:
+      volumes:
+        - name: tz-config
+          hostPath:
+            path: /usr/share/zoneinfo/America/Sao_Paulo
+      containers:
+        - name: learning-deploy-kubernetes-docker
+          image: gcr.io/responde-ai/learning-deploy-kubernetes-docker:${COMMIT_SHA}
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "100Mi"
+            limits:
+              cpu: "200m"
+              memory: "500Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 40
+            periodSeconds: 30
+          env:
+            - name: NODE_ENV
+              value: "production"
+          volumeMounts:
+            - name: tz-config
+              mountPath: /etc/localtime
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: deploy-tutorial-production-deployment-hpa
+  namespace: default
+  labels:
+    app: deploy-tutorial-production-deployment
+spec:
+  maxReplicas: 7
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: deploy-tutorial-production-deployment
+  targetCPUUtilizationPercentage: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: deploy-tutorial-production-deployment-nodeport
+spec:
+  selector:
+    app: deploy-tutorial-production-deployment
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3001
+      protocol: TCP
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deploy-tutorial-production-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: deploy-tutorial-production-deployment
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3001

@@ -1,0 +1,23 @@
+FROM node:10.16.2-slim
+
+MAINTAINER Pedro Barros <pedro@respondeai.com.br>
+
+
+RUN apt-get update && apt-get install -y python build-essential \
+ && apt-get install -y --only-upgrade tzdata \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /learning-deploy-kubernetes-docker
+
+COPY package*.json ./
+
+RUN npm install --only=production
+
+COPY . .
+
+ENV GENERATE_SOURCEMAP false
+RUN npm run build
+
+CMD npm start
+
+# CMD ["node", "./bin/www"]

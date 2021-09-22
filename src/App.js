@@ -1,14 +1,15 @@
-import React from 'react'
+import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import Teste from 'components/Test.js';
+import Teste from "components/Test.js";
 
 export default function App() {
   return (
     <MainContainer>
       <Router>
         <Switch>
+          <Route path="/health"> OK </Route>
           <Route path="/">
             <Teste />
           </Route>
@@ -19,5 +20,5 @@ export default function App() {
 }
 
 const MainContainer = styled.div`
-    width: 100%;
-` ;
+  width: 100%;
+`;

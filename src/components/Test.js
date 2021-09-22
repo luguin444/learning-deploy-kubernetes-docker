@@ -1,18 +1,15 @@
-import { styled, media } from 'styles';
+import { styled } from "styles";
 
 export default function Test() {
+  console.log(process.env);
 
-  console.log(media.isMobile())
-
-  return(
-      <Title> Dando bom menino </Title>
-  );
+  return <Title> Aoo rapaz :) {`${process.env.REACT_APP_MY_TEST_KEY}`}</Title>;
 }
 
 const Title = styled.h1`
-    text-align: center;
-    margin-top: 20px;
-    font-size: 3rem;
-    background-color: #ccc;
-    color: blue;
-`
+  text-align: center;
+  margin-top: 20px;
+  font-size: 3rem;
+  background-color: #ccc;
+  color: blue;
+`;
